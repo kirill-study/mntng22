@@ -53,31 +53,31 @@ body, html {
 .body {
     top: 60%;
     left: 40%;
-    width: 20%;
-    height: 25%;
+    width: 50%;
+    height: 35%;
     border-radius: 50%;
 }
 
 .eyes {
     top: 35%;
     left: 42%;
-    width: 15%;
+    width: 65%;
     height: 10%;
     border-radius: 50%;
 }
 
 .ear {
-    top: 30%;
-    left: 65%;
-    width: 10%;
+    top: 20%;
+    left: 75%;
+    width: 30%;
     height: 15%;
     border-radius: 50%;
 }
 
 .brain {
-    top: 20%;
+    top: 10%;
     left: 42%;
-    width: 15%;
+    width: 45%;
     height: 10%;
     border-radius: 50%;
 }
