@@ -25,11 +25,11 @@ document.addEventListener('touchstart', (e) => {
 
 // Bar chart data
 const swipeData = {
-    labels: ['ЧУВСТВУЮ', 'ВИЖУ', 'СЛЫШУ', 'ДУМАЮ'], // Categories for swipes
+    labels: ['ВИЖУ', 'СЛЫШУ', 'ЧУВСТВУЮ', 'ДУМАЮ'], // Categories for swipes
     datasets: [{
         label: 'Swipe Counts',
         data: [0, 0, 0, 0], // Initial counts
-        backgroundColor: ['#ff6384', '#ffce56', '#36a2eb', '#4bc0c0'], // Bar colors
+        backgroundColor: ['#ffce56', '#36a2eb', '#ff6384', '#4bc0c0'], // Bar colors
         borderRadius: 5, // Rounded bars
         borderWidth: 1
     }]
