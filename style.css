@@ -28,58 +28,34 @@ body, html {
     z-index: 1;
 }
 
-.overlay {
+#floating-text-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 2;
-}
-
-.transparent-button {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent overlay */
-    border: none;
-    cursor: pointer;
     z-index: 3;
+    pointer-events: none; /* Ensure text doesn't block swipe gestures */
 }
 
-.transparent-button:focus {
-    outline: none;
+.floating-text {
+    position: absolute;
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    animation: floatUp 1s ease-out forwards;
+    z-index: 4;
 }
 
-/* Approximate positions and sizes for the interactive areas */
-.body {
-    top: 60%;
-    left: 40%;
-    width: 50%;
-    height: 35%;
-    border-radius: 50%;
-}
-
-.eyes {
-    top: 35%;
-    left: 42%;
-    width: 65%;
-    height: 10%;
-    border-radius: 50%;
-}
-
-.ear {
-    top: 20%;
-    left: 75%;
-    width: 30%;
-    height: 15%;
-    border-radius: 50%;
-}
-
-.brain {
-    top: 10%;
-    left: 42%;
-    width: 45%;
-    height: 10%;
-    border-radius: 50%;
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
 }
 
 #counter-container {

@@ -3,24 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Monkey</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Interactive Monkey Swipe</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="app">
         <img src="monkey.jpg" alt="Monkey" id="monkey-img">
-        <div class="overlay">
-            <!-- Transparent buttons with specific areas -->
-            <button id="body-btn" class="transparent-button body"></button>
-            <button id="eyes-btn" class="transparent-button eyes"></button>
-            <button id="ear-btn" class="transparent-button ear"></button>
-            <button id="brain-btn" class="transparent-button brain"></button>
-        </div>
+        <div id="floating-text-container"></div>
         <div id="counter-container">
-            <div>Feel (Body): <span id="body-count">0</span></div>
-            <div>See (Eyes): <span id="eyes-count">0</span></div>
-            <div>Hear (Ear): <span id="ear-count">0</span></div>
-            <div>Think (Brain): <span id="brain-count">0</span></div>
+            <div>Feel (Down): <span id="body-count">0</span></div>
+            <div>See (Up): <span id="eyes-count">0</span></div>
+            <div>Hear (Left): <span id="ear-count">0</span></div>
+            <div>Think (Right): <span id="brain-count">0</span></div>
         </div>
     </div>
     <script src="script.js"></script>
