@@ -89,7 +89,7 @@ function showFloatingText(text, x, y) {
     floatingText.textContent = text;
     floatingText.style.left = `${x}px`;
     floatingText.style.top = `${y}px`;
-    floatingTextContainer.appendChild(floatingText);
+    //floatingTextContainer.appendChild(floatingText);
 
     // Remove text after animation
     floatingText.addEventListener('animationend', () => {
