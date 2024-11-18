@@ -145,7 +145,25 @@ function label2ru(label){
 
 function showFeedbackText(label) {
     feedbackText.textContent = label2ru(label);
+    while (feedbackText.classList.length > 0) {
+        feedbackText.classList.remove(feedbackText.classList.item(0));
+     }
+    if (label == "THINK"){
 
+        feedbackText.classList.add("lightblue")
+    } 
+    if (label == "FEEL") {
+
+        feedbackText.classList.add("pink")
+    }
+    if (label == "HEAR") {
+
+        feedbackText.classList.add("blue")
+    }
+    if (label == "SEE") {
+
+        feedbackText.classList.add("yellow")
+    }
     // Reset animation by removing and re-adding the class
     feedbackText.style.animation = 'none'; // Clear animation
     feedbackText.offsetHeight;             // Trigger reflow

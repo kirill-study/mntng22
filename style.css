@@ -37,10 +37,26 @@ body, html {
     font-size: 48px;
     font-weight: bold;
     color: #ffffff;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.7);
     z-index: 3;
     opacity: 0;
     animation: fadeOut 1.5s ease-out forwards;
+}
+.yellow {
+    text-shadow: 3px 3px 7px rgba(242, 227, 16, 0.7) !important;
+
+}
+.pink {
+    text-shadow: 3px 3px 7px rgba(238, 109, 255, 0.7)!important;
+
+}
+.blue {
+    text-shadow: 3px 3px 7px rgba(19, 133, 234, 0.7)!important;
+
+}
+.lightblue {
+    text-shadow: 3px 3px 7px rgba(11, 198, 219, 0.7)!important;
+
 }
 
 @keyframes fadeOut {
