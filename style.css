@@ -102,15 +102,16 @@ body, html {
     display: flex;
     justify-content: space-around; /* Space evenly */
     align-items: center;           /* Center vertically */
-    position: fixed;               /* Fix to bottom of screen */
+    position: fixed;               /* Fixed to the bottom of the viewport */
     bottom: 0;
     left: 0;
     width: 100%;                   /* Full width */
     background-color: #333;        /* Dark grey background */
-    color: white;                  /* White text for contrast */
+    color: white;                  /* White text */
     font-size: 18px;
-    padding: 10px 0;               /* Vertical padding */
-    z-index: 1000;                 /* Ensure it's above other elements */
+    padding: 10px 0;               /* Padding for better tap zones */
+    z-index: 9999;                 /* Ensure it's on top of other elements */
+    box-shadow: 0px -2px 6px rgba(0, 0, 0, 0.5); /* Shadow to create separation from the content */
 }
 
 /* Individual counter items */
@@ -118,12 +119,18 @@ body, html {
     flex: 1;                       /* Equal width for all counters */
     text-align: center;            /* Center text alignment */
     padding: 10px;
-    cursor: default;               /* No click interaction */
+    cursor: default;               /* No interaction */
     background-color: #555;        /* Slightly lighter grey */
     border-radius: 5px;            /* Rounded corners */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow effect */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
 }
 
 .counter-item span {
-    font-weight: bold;             /* Highlight counter number */
+    font-weight: bold;             /* Highlight counter numbers */
+}
+
+/* Adjustments for small screens */
+body {
+    margin: 0;                     /* Remove default margin */
+    padding-bottom: 60px;          /* Prevent content from being hidden under counters */
 }
