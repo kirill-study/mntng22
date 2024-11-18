@@ -212,7 +212,10 @@ function startTimer(){
 function updateTimer() {
     const currentTime = Date.now()
     const timeSinceLastKeyPress = (currentTime - lastKeyPressTime) / 1000 // Calculate time since last key press in seconds
-    document.getElementById('counterL').textContent = `${formatTime(timeSinceLastKeyPress * 1000, true)}`;
+    if (lastKeyPressTime != 0){
+        document.getElementById('counterL').textContent = `${formatTime(timeSinceLastKeyPress * 1000, true)}`;
+    }
+
     //if (timerStarted && timeSinceLastKeyPress > longestTimeBetweenPresses) {
       //longestTimeBetweenPresses = timeSinceLastKeyPress
       //document.getElementById('longestTime').textContent = `Longest Time Between Presses: ${longestTimeBetweenPresses.toFixed(2)} seconds`
@@ -226,7 +229,7 @@ function formatTime(milliseconds, shortFormat = true) {
     const seconds = totalSeconds % 60
   
     if (shortFormat) {
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+      return `${String(minutes).padStart(1, '0')}:${String(seconds).padStart(2, '0')}`
     }
   
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`

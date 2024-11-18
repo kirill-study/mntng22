@@ -21,12 +21,13 @@ body, html {
 }
 
 #counter {
-    color: white;
+    color: rgb(210, 210, 210);
     right: 50px;
     position: absolute;
     z-index: 99999;
-    right: 20px;
-    bottom: 80px;
+    right: 15px;
+    bottom: 70px;
+    font-size: 14px;
 }
 
 #monkey-img {
