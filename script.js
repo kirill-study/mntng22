@@ -75,9 +75,11 @@ function updateCounter(type, x, y, label) {
 // Show feedback text at the top
 function showFeedbackText(label) {
     feedbackText.textContent = label;
-    feedbackText.style.animation = 'none';
-    feedbackText.offsetHeight; // Trigger reflow
-    feedbackText.style.animation = 'fadeOut 1.5s ease-out forwards';
+
+    // Reset animation by removing and re-adding the class
+    feedbackText.style.animation = 'none'; // Clear animation
+    feedbackText.offsetHeight;             // Trigger reflow
+    feedbackText.style.animation = 'fadeOut 1.5s ease-out forwards'; // Restart animation
 }
 
 // Show floating "+1" text near swipe location
