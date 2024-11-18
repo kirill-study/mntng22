@@ -108,7 +108,7 @@ body, html {
     width: 100%;                   /* Full width */
     background-color: #333;        /* Dark grey background */
     color: white;                  /* White text */
-    font-size: 18px;
+    font-size: 12px;
     padding: 10px 0;               /* Padding for better tap zones */
     z-index: 9999;                 /* Ensure it's on top of other elements */
     box-shadow: 0px -2px 6px rgba(0, 0, 0, 0.5); /* Shadow to create separation from the content */
@@ -118,7 +118,7 @@ body, html {
 .counter-item {
     flex: 1;                       /* Equal width for all counters */
     text-align: center;            /* Center text alignment */
-    padding: 10px;
+    padding: 7px;
     cursor: default;               /* No interaction */
     background-color: #555;        /* Slightly lighter grey */
     border-radius: 5px;            /* Rounded corners */
