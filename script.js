@@ -132,6 +132,7 @@ function updateCounter(type, x, y, label) {
 
     showFeedbackText(label);
     showFloatingText(text, x, y, label);
+    updateTimer();
 }
 
 // Show feedback text at the top
@@ -142,7 +143,8 @@ function label2ru(label){
     if (label == "SEE") return 'ВИЖУ'
 
 }
-
+const currentTime = Date.now()
+let lastKeyPressTime = 0;
 // Show floating "+1" text near swipe location
 function showFloatingText(text, x, y, label) {
     const floatingText = document.createElement('div');
@@ -176,7 +178,7 @@ function showFeedbackText(label) {
         feedbackText.classList.remove(feedbackText.classList.item(0));
      }
     if (label == "THINK"){
-
+        
         feedbackText.classList.add("lightblue")
     } 
     if (label == "FEEL") {
@@ -192,6 +194,9 @@ function showFeedbackText(label) {
 
         feedbackText.classList.add("yellow")
     }
+    const currentTime = Date.now()
+
+    lastKeyPressTime = currentTime;
     // Reset animation by removing and re-adding the class
     feedbackText.style.animation = 'none'; // Clear animation
     feedbackText.offsetHeight;             // Trigger reflow
@@ -199,3 +204,34 @@ function showFeedbackText(label) {
 }
 
 
+function startTimer(){
+    setInterval(updateTimer, 1000)
+}
+
+
+function updateTimer() {
+    const currentTime = Date.now()
+    const timeSinceLastKeyPress = (currentTime - lastKeyPressTime) / 1000 // Calculate time since last key press in seconds
+    document.getElementById('counterL').textContent = `${formatTime(timeSinceLastKeyPress * 1000, true)}`;
+    //if (timerStarted && timeSinceLastKeyPress > longestTimeBetweenPresses) {
+      //longestTimeBetweenPresses = timeSinceLastKeyPress
+      //document.getElementById('longestTime').textContent = `Longest Time Between Presses: ${longestTimeBetweenPresses.toFixed(2)} seconds`
+    //}
+}
+
+function formatTime(milliseconds, shortFormat = true) {
+    const totalSeconds = Math.floor(milliseconds / 1000)
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = totalSeconds % 60
+  
+    if (shortFormat) {
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+    }
+  
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+  }
+
+  window.onload = function () {
+    startTimer();
+  }

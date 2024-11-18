@@ -20,6 +20,15 @@ body, html {
     align-items: center;
 }
 
+#counter {
+    color: white;
+    right: 50px;
+    position: absolute;
+    z-index: 99999;
+    right: 20px;
+    bottom: 80px;
+}
+
 #monkey-img {
     position: absolute;
     top: 45px;
