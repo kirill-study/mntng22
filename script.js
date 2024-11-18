@@ -82,7 +82,7 @@ function label2ru(label){
 }
 
 function showFeedbackText(label) {
-    feedbackText.textContent = label;
+    feedbackText.textContent = label2ru(label);
 
     // Reset animation by removing and re-adding the class
     feedbackText.style.animation = 'none'; // Clear animation
