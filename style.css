@@ -53,19 +53,19 @@ body, html {
     animation: fadeOut 1.5s ease-out forwards;
 }
 .yellow {
-    text-shadow: 5px 5px 9px rgba(242, 227, 16, 0.8) !important;
+    text-shadow: 3px 3px 11px rgba(242, 227, 16, 0.9) !important;
 
 }
 .pink {
-    text-shadow: 5px 5px 9px rgba(238, 109, 255, 0.8)!important;
+    text-shadow: 3px 3px 11px rgba(238, 109, 255, 0.9)!important;
 
 }
 .blue {
-    text-shadow: 5px 5px 9px rgba(19, 133, 234, 0.8)!important;
+    text-shadow: 3px 3px 11px rgba(19, 133, 234, 0.9)!important;
 
 }
 .lightblue {
-    text-shadow: 5px 5px 9px rgba(11, 198, 219, 0.8)!important;
+    text-shadow: 3px 3px 11px rgba(11, 198, 219, 0.9)!important;
 
 }
 
