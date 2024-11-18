@@ -94,7 +94,7 @@ document.addEventListener('touchend', (e) => {
             updateChart(3); // THINK
         } else if (diffX < -50) {
             updateCounter('ear', endX, endY, 'HEAR'); // Swipe left
-            updateChart(2); // HEAR
+            updateChart(0); // HEAR
         }
     } else {
         if (diffY > 50) {
@@ -104,7 +104,7 @@ document.addEventListener('touchend', (e) => {
 
         } else if (diffY < -50) {
             updateCounter('body', endX, endY, 'FEEL'); // Swipe up
-            updateChart(0); // FEEL
+            updateChart(2); // FEEL
         }
     }
 });
