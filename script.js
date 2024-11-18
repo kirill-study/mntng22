@@ -94,13 +94,13 @@ document.addEventListener('touchend', (e) => {
             updateChart(3); // THINK
         } else if (diffX < -50) {
             updateCounter('ear', endX, endY, 'HEAR'); // Swipe left
-            updateChart(0); // HEAR
+            updateChart(1); // HEAR
         }
     } else {
         if (diffY > 50) {
             // Swipe down
             updateCounter('eyes', endX, endY, 'SEE');
-            updateChart(1); // SEE
+            updateChart(0); // SEE
 
         } else if (diffY < -50) {
             updateCounter('body', endX, endY, 'FEEL'); // Swipe up
