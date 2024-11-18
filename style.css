@@ -84,8 +84,9 @@ body, html {
 #chart-container {
     z-index: 9999;
     position: absolute;
-    bottom: -10px;
+    bottom: 10px;
     width: 100%;
+    height:70px;
 }
 
 #counter-container {
