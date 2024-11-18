@@ -10,6 +10,7 @@ const eyesCountDisplay = document.getElementById('eyes-count');
 const earCountDisplay = document.getElementById('ear-count');
 const brainCountDisplay = document.getElementById('brain-count');
 const floatingTextContainer = document.getElementById('floating-text-container');
+const feedbackText = document.getElementById('feedback-text');
 
 // Starting touch coordinates
 let startX = 0;
@@ -33,21 +34,21 @@ document.addEventListener('touchend', (e) => {
     // Determine swipe direction
     if (Math.abs(diffX) > Math.abs(diffY)) {
         if (diffX > 50) {
-            updateCounter('brain', endX, endY); // Swipe right
+            updateCounter('brain', endX, endY, 'THINK'); // Swipe right
         } else if (diffX < -50) {
-            updateCounter('ear', endX, endY); // Swipe left
+            updateCounter('ear', endX, endY, 'HEAR'); // Swipe left
         }
     } else {
         if (diffY > 50) {
-            updateCounter('body', endX, endY); // Swipe down
+            updateCounter('body', endX, endY, 'FEEL'); // Swipe down
         } else if (diffY < -50) {
-            updateCounter('eyes', endX, endY); // Swipe up
+            updateCounter('eyes', endX, endY, 'SEE'); // Swipe up
         }
     }
 });
 
 // Update counters and show floating "+1" animation
-function updateCounter(type, x, y) {
+function updateCounter(type, x, y, label) {
     let text;
     if (type === 'body') {
         bodyCount++;
@@ -67,7 +68,16 @@ function updateCounter(type, x, y) {
         text = '+1';
     }
 
+    showFeedbackText(label);
     showFloatingText(text, x, y);
+}
+
+// Show feedback text at the top
+function showFeedbackText(label) {
+    feedbackText.textContent = label;
+    feedbackText.style.animation = 'none';
+    feedbackText.offsetHeight; // Trigger reflow
+    feedbackText.style.animation = 'fadeOut 1.5s ease-out forwards';
 }
 
 // Show floating "+1" text near swipe location
