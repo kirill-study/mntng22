@@ -137,22 +137,3 @@ body {
     padding-bottom: 40px;          /* Prevent content from being hidden under counters */
 }
 
-/* Swipe trail */
-.trail {
-    position: absolute;
-    width: 10px;                    /* Trail size */
-    height: 10px;
-    background-color: rgba(255, 255, 255, 0.7); /* Light translucent color */
-    border-radius: 50%;             /* Make it a circle */
-    pointer-events: none;           /* Ensure it doesn't interfere with touch events */
-    z-index: 10000;                 /* Ensure it's above all elements */
-    animation: fadeOut 0.5s ease-out forwards; /* Fade-out animation */
-}
-
-/* Trail fade-out animation */
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        transform: scale(0.5);      /* Shrink the circle */
-    }
-}
