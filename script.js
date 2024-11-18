@@ -18,9 +18,27 @@ let startY = 0;
 
 // Detect swipe direction
 document.addEventListener('touchstart', (e) => {
-    const touch = e.touches[0];
-    startX = touch.clientX;
-    startY = touch.clientY;
+// Prevent scrolling behavior
+event.preventDefault();
+
+// Get the touch coordinates
+const touch = event.touches[0];
+const x = touch.clientX;
+const y = touch.clientY;
+
+// Create a trail element
+const trail = document.createElement('div');
+trail.classList.add('trail');
+trail.style.left = `${x - 5}px`; // Center the trail at the touch point
+trail.style.top = `${y - 5}px`;
+
+// Append the trail to the body
+document.body.appendChild(trail);
+
+// Remove the trail after the animation ends
+setTimeout(() => {
+    trail.remove();
+}, 500);
 });
 
 document.addEventListener('touchend', (e) => {
@@ -99,7 +117,7 @@ function showFloatingText(text, x, y) {
     floatingText.textContent = text;
     floatingText.style.left = `${x}px`;
     floatingText.style.top = `${y}px`;
-    //floatingTextContainer.appendChild(floatingText);
+    floatingTextContainer.appendChild(floatingText);
 
     // Remove text after animation
     floatingText.addEventListener('animationend', () => {
