@@ -4,7 +4,7 @@ body, html {
     padding: 0;
     height: 100%;
     overflow: hidden; /* Prevent scrolling */
-    background-color: #f0f0f0;
+    background-color: #000000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +22,7 @@ body, html {
 
 #monkey-img {
     position: absolute;
-    top: 0;
+    top: 25px;
     left: 0;
     width: 100%;
     object-fit: cover;
