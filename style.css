@@ -43,19 +43,19 @@ body, html {
     animation: fadeOut 1.5s ease-out forwards;
 }
 .yellow {
-    text-shadow: 3px 3px 7px rgba(242, 227, 16, 0.7) !important;
+    text-shadow: 5px 5px 9px rgba(242, 227, 16, 0.8) !important;
 
 }
 .pink {
-    text-shadow: 3px 3px 7px rgba(238, 109, 255, 0.7)!important;
+    text-shadow: 5px 5px 9px rgba(238, 109, 255, 0.8)!important;
 
 }
 .blue {
-    text-shadow: 3px 3px 7px rgba(19, 133, 234, 0.7)!important;
+    text-shadow: 5px 5px 9px rgba(19, 133, 234, 0.8)!important;
 
 }
 .lightblue {
-    text-shadow: 3px 3px 7px rgba(11, 198, 219, 0.7)!important;
+    text-shadow: 5px 5px 9px rgba(11, 198, 219, 0.8)!important;
 
 }
 
@@ -80,12 +80,30 @@ body, html {
 
 .floating-text {
     position: absolute;
-    font-size: 24px;
+    font-size: 34px;
     font-weight: bold;
     color: red;
-    animation: floatUp 1s ease-out forwards;
+    animation: floatUp 1.4s ease-out forwards;
     z-index: 4;
 }
+
+.fyellow {
+    color: rgba(242, 227, 16, 0.8) !important;
+
+}
+.fpink {
+    color: rgba(238, 109, 255, 0.8)!important;
+
+}
+.fblue {
+    color: rgba(19, 133, 234, 0.8)!important;
+
+}
+.flightblue {
+    color: rgba(11, 198, 219, 0.8)!important;
+
+}
+
 
 @keyframes floatUp {
     0% {

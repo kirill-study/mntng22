@@ -131,7 +131,7 @@ function updateCounter(type, x, y, label) {
     }
 
     showFeedbackText(label);
-    showFloatingText(text, x, y);
+    showFloatingText(text, x, y, label);
 }
 
 // Show feedback text at the top
@@ -141,6 +141,33 @@ function label2ru(label){
     if (label == "HEAR") return 'СЛЫШУ'
     if (label == "SEE") return 'ВИЖУ'
 
+}
+
+// Show floating "+1" text near swipe location
+function showFloatingText(text, x, y, label) {
+    const floatingText = document.createElement('div');
+    floatingText.className = 'floating-text';
+    floatingText.textContent = text;
+    floatingText.style.left = `${x}px`;
+    floatingText.style.top = `${y}px`;
+    if (label == "THINK"){
+        floatingText.classList.add("flightblue")
+    } 
+    if (label == "FEEL") {
+        floatingText.classList.add("fpink")
+    }
+    if (label == "HEAR") {
+        floatingText.classList.add("fblue")
+    }
+    if (label == "SEE") {
+        floatingText.classList.add("fyellow")
+    }
+    floatingTextContainer.appendChild(floatingText);
+
+    // Remove text after animation
+    floatingText.addEventListener('animationend', () => {
+        floatingText.remove();
+    });
 }
 
 function showFeedbackText(label) {
@@ -155,6 +182,7 @@ function showFeedbackText(label) {
     if (label == "FEEL") {
 
         feedbackText.classList.add("pink")
+
     }
     if (label == "HEAR") {
 
@@ -170,17 +198,4 @@ function showFeedbackText(label) {
     feedbackText.style.animation = 'fadeOut 1.5s ease-out forwards'; // Restart animation
 }
 
-// Show floating "+1" text near swipe location
-function showFloatingText(text, x, y) {
-    const floatingText = document.createElement('div');
-    floatingText.className = 'floating-text';
-    floatingText.textContent = text;
-    floatingText.style.left = `${x}px`;
-    floatingText.style.top = `${y}px`;
-    floatingTextContainer.appendChild(floatingText);
 
-    // Remove text after animation
-    floatingText.addEventListener('animationend', () => {
-        floatingText.remove();
-    });
-}
