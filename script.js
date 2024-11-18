@@ -73,6 +73,14 @@ function updateCounter(type, x, y, label) {
 }
 
 // Show feedback text at the top
+function label2ru(label){
+    if (label == "THINK") return 'ДУМАЮ'
+    if (label == "FEEL") return 'ЧУВСТВУЮ'
+    if (label == "HEAR") return 'СЛЫШУ'
+    if (label == "SEE") return 'ВИЖУ'
+
+}
+
 function showFeedbackText(label) {
     feedbackText.textContent = label;
 
