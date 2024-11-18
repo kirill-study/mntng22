@@ -81,8 +81,15 @@ body, html {
         transform: translateY(-50px);
     }
 }
+#chart-container {
+    z-index: 9999;
+    position: absolute;
+    bottom: -10px;
+    width: 100%;
+}
 
 #counter-container {
+    display: none;
     position: absolute;
     bottom: 20px;
     left: 50%;
@@ -98,7 +105,8 @@ body, html {
 }
 /* Counters container */
 #counters {
-    display: flex;
+    display: none;
+    /*display: flex;*/
     justify-content: space-around; /* Space evenly */
     align-items: center;           /* Center vertically */
     position: fixed;               /* Fixed to the bottom of the viewport */
@@ -115,6 +123,7 @@ body, html {
 
 /* Individual counter items */
 .counter-item {
+    display: none;
     flex: 1;                       /* Equal width for all counters */
     text-align: center;            /* Center text alignment */
     padding: 5px;

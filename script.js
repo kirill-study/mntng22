@@ -23,6 +23,62 @@ document.addEventListener('touchstart', (e) => {
     startY = touch.clientY;
 });
 
+// Bar chart data
+const swipeData = {
+    labels: ['ЧУВСТВУЮ', 'ВИЖУ', 'СЛЫШУ', 'ДУМАЮ'], // Categories for swipes
+    datasets: [{
+        label: 'Swipe Counts',
+        data: [0, 0, 0, 0], // Initial counts
+        backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0'], // Bar colors
+        borderRadius: 5, // Rounded bars
+        borderWidth: 1
+    }]
+};
+
+// Bar chart options
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false, // Allows resizing
+    scales: {
+        x: {
+            ticks: {
+                color: 'white' // White text for labels
+            },
+            grid: {
+                display: false // Hide grid lines
+            }
+        },
+        y: {
+            ticks: {
+                color: 'white', // White text for values
+                beginAtZero: true
+            },
+            grid: {
+                color: 'rgba(255, 255, 255, 0.2)' // Light grid lines
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            display: false // Hide legend
+        }
+    }
+};
+
+// Initialize the chart
+const ctx = document.getElementById('swipeChart').getContext('2d');
+const swipeChart = new Chart(ctx, {
+    type: 'bar',
+    data: swipeData,
+    options: chartOptions
+});
+
+// Update chart data on swipe
+function updateChart(index) {
+    swipeData.datasets[0].data[index]++; // Increment the relevant swipe count
+    swipeChart.update(); // Refresh the chart
+}
+
 document.addEventListener('touchend', (e) => {
     const touch = e.changedTouches[0];
     const endX = touch.clientX;
@@ -35,16 +91,20 @@ document.addEventListener('touchend', (e) => {
     if (Math.abs(diffX) > Math.abs(diffY)) {
         if (diffX > 50) {
             updateCounter('brain', endX, endY, 'THINK'); // Swipe right
+            updateChart(3); // THINK
         } else if (diffX < -50) {
             updateCounter('ear', endX, endY, 'HEAR'); // Swipe left
+            updateChart(2); // HEAR
         }
     } else {
         if (diffY > 50) {
             // Swipe down
             updateCounter('eyes', endX, endY, 'SEE');
+            updateChart(1); // SEE
 
         } else if (diffY < -50) {
             updateCounter('body', endX, endY, 'FEEL'); // Swipe up
+            updateChart(0); // FEEL
         }
     }
 });

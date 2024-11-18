@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Monkey Swipe</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
     <div id="app">
@@ -24,7 +26,9 @@
             <div class="counter-item" id="ear-counter">СЛЫШУ <br><span id="ear-count">0</span></div>
             <div class="counter-item" id="brain-counter">ДУМАЮ <br><span id="brain-count">0</span></div>
         </div>
-        
+        <div id="chart-container">
+            <canvas id="swipeChart"></canvas>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
