@@ -9,7 +9,7 @@
 <body>
     <div id="app">
         <!-- Monkey image -->
-        <img src="monkey.jpg" alt="Monkey" id="monkey-img">
+        <img src="monkey2.jpg" alt="Monkey" id="monkey-img">
         
         <!-- Feedback text -->
         <div id="feedback-text"></div>
@@ -18,12 +18,13 @@
         <div id="floating-text-container"></div>
         
         <!-- Counter list -->
-        <div id="counter-container">
-            <div>Чувствую (Вниз): <span id="body-count">0</span></div>
-            <div>Вижу (Вверх): <span id="eyes-count">0</span></div>
-            <div>Слышу (Влево): <span id="ear-count">0</span></div>
-            <div>Думаю (Вправо): <span id="brain-count">0</span></div>
+        <div id="counters">
+            <div class="counter-item" id="body-counter">ЧУВСТВУЮ: <span id="body-count">0</span></div>
+            <div class="counter-item" id="eyes-counter">ВИЖУ: <span id="eyes-count">0</span></div>
+            <div class="counter-item" id="ear-counter">СЛЫШУ: <span id="ear-count">0</span></div>
+            <div class="counter-item" id="brain-counter">ДУМАЮ: <span id="brain-count">0</span></div>
         </div>
+        
     </div>
     <script src="script.js"></script>
 </body>

@@ -40,9 +40,9 @@ document.addEventListener('touchend', (e) => {
         }
     } else {
         if (diffY > 50) {
-            updateCounter('body', endX, endY, 'FEEL'); // Swipe down
+            updateCounter('eyes', endX, endY, 'SEE'); // Swipe down
         } else if (diffY < -50) {
-            updateCounter('eyes', endX, endY, 'SEE'); // Swipe up
+            updateCounter('body', endX, endY, 'FEEL'); // Swipe up
         }
     }
 });
