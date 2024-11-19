@@ -244,7 +244,8 @@ function updateTimer() {
     if (lastKeyPressTime != 0){
         document.getElementById('counterL').textContent = `${formatTime(timeSinceLastKeyPress * 1000, true)}`;
         //prepretimeSinceLastKeyPress = (preLastKeyPressTime - prepreLastKeyPressTime) / 1000
-        //pretimeSinceLastKeyPress = (lastKeyPressTime - preLastKeyPressTime) / 1000
+        //prepretimeSinceLastKeyPress = pretimeSinceLastKeyPress
+        pretimeSinceLastKeyPress = timeSinceLastKeyPress
     }
 
     
