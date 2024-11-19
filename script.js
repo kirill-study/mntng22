@@ -145,6 +145,16 @@ function label2ru(label){
 }
 const currentTime = Date.now()
 let lastKeyPressTime = 0;
+
+let started = false
+
+let pretimeSinceLastKeyPress;
+let prepretimeSinceLastKeyPress;
+
+let preLastKeyPressTime = 0;
+let prepreLastKeyPressTime = 0;
+let preprepreLastKeyPressTime = 0;
+
 // Show floating "+1" text near swipe location
 function showFloatingText(text, x, y, label) {
     const floatingText = document.createElement('div');
@@ -195,14 +205,33 @@ function showFeedbackText(label) {
         feedbackText.classList.add("yellow")
     }
     const currentTime = Date.now()
-
+    //preprepreLastKeyPressTime = prepreLastKeyPressTime;
+    //prepreLastKeyPressTime = preLastKeyPressTime
+    preLastKeyPressTime = lastKeyPressTime;
     lastKeyPressTime = currentTime;
+    if (pretimeSinceLastKeyPress) {
+        document.getElementById('precounterL').textContent = `${formatTime(pretimeSinceLastKeyPress * 1000, true)}`;
+}
+    if (prepretimeSinceLastKeyPress) {
+        document.getElementById('preprecounterL').textContent = `${formatTime(prepretimeSinceLastKeyPress * 1000, true)}`;
+}
+    if (!started) started = true
     // Reset animation by removing and re-adding the class
     feedbackText.style.animation = 'none'; // Clear animation
     feedbackText.offsetHeight;             // Trigger reflow
     feedbackText.style.animation = 'fadeOut 1.5s ease-out forwards'; // Restart animation
 }
 
+if (started) {
+    setInterval(updateClock, 1000)
+}
+
+let TIMELEFT;
+
+function updateClock() {
+    document.getElementById('clock').textContent = `${formatTime(TIMELEFT * 1000, true)}`;
+    TIMELEFT -= 1000
+}
 
 function startTimer(){
     setInterval(updateTimer, 1000)
@@ -214,7 +243,11 @@ function updateTimer() {
     const timeSinceLastKeyPress = (currentTime - lastKeyPressTime) / 1000 // Calculate time since last key press in seconds
     if (lastKeyPressTime != 0){
         document.getElementById('counterL').textContent = `${formatTime(timeSinceLastKeyPress * 1000, true)}`;
+        //prepretimeSinceLastKeyPress = (preLastKeyPressTime - prepreLastKeyPressTime) / 1000
+        //pretimeSinceLastKeyPress = (lastKeyPressTime - preLastKeyPressTime) / 1000
     }
+
+    
 
     //if (timerStarted && timeSinceLastKeyPress > longestTimeBetweenPresses) {
       //longestTimeBetweenPresses = timeSinceLastKeyPress
