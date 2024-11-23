@@ -32,16 +32,16 @@ body, html {
 
 #monkey-img {
     position: absolute;
-    bottom: 70px;
-    left: 27%;
-    width: 45%;
+    bottom: 50px;
+    left: 26%;
+    width: 48%;
     object-fit: cover;
     z-index: 1;
 }
 
 #feedback-text {
     position: absolute;
-    bottom: 18%;
+    bottom: 20%;
     width: 100%;
     text-align: center;
     font-size: 34px;
