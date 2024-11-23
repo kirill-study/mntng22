@@ -25,7 +25,7 @@ document.addEventListener('touchstart', (e) => {
 
 // Bar chart data
 const swipeData = {
-    labels: ['ВИЖУ', 'СЛЫШУ', 'ЧУВСТВУЮ', 'ДУМАЮ'], // Categories for swipes
+    labels: ['ВИЖУ↓', 'СЛЫШУ←', 'ЧУВСТВУЮ↑', 'ДУМАЮ→'], // Categories for swipes
     datasets: [{
         label: 'Swipe Counts',
         data: [0, 0, 0, 0], // Initial counts
