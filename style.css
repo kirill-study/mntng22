@@ -32,9 +32,9 @@ body, html {
 
 #monkey-img {
     position: absolute;
-    top: 50px;
-    left: 0;
-    width: 100%;
+    bottom: 70px;
+    left: 27%;
+    width: 45%;
     object-fit: cover;
     z-index: 1;
 }
