@@ -1,44 +1,781 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Monkey Swipe</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Noting</title>
+<style>
+  /* ─── Reset & base ─────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --see:    #f2e310;
+    --hear:   #1385ea;
+    --feel:   #ee6dff;
+    --think:  #0bc6db;
+    --bg:     #000;
+    --chrome: rgba(255,255,255,0.07);
+    --text:   rgba(255,255,255,0.85);
+    --dim:    rgba(255,255,255,0.3);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Arial', sans-serif;
+    touch-action: none;
+  }
+
+  /* ─── Layout ────────────────────────────────────────── */
+  #app {
+    position: fixed; inset: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOP ZONE — 28% */
+  #monkey-zone {
+    position: relative;
+    height: 28%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  /* Monkey SVG */
+  #monkey-wrap {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 110px;
+    z-index: 2;
+  }
+
+  /* Interval timers — top right */
+  #timers {
+    position: absolute;
+    top: 10px; right: 14px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    z-index: 10;
+    line-height: 1.5;
+  }
+  #t-prepre { font-size: 11px; color: var(--dim); opacity: 0.4; }
+  #t-pre    { font-size: 12px; color: var(--dim); opacity: 0.65; }
+  #t-cur    { font-size: 15px; color: var(--text); font-weight: 600; letter-spacing: 0.04em; }
+
+  /* Round counter — top left */
+  #round-display {
+    position: absolute;
+    top: 10px; left: 14px;
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.08em;
+    z-index: 10;
+  }
+  #round-display span { color: var(--text); font-weight: 700; font-size: 14px; }
+
+  /* Play / Pause button */
+  #play-pause {
+    position: absolute;
+    top: 8px; left: 50%; transform: translateX(-50%);
+    background: var(--chrome);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    color: var(--text);
+    font-size: 18px;
+    width: 42px; height: 28px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #play-pause:active { background: rgba(255,255,255,0.15); }
+
+  /* Feedback flash text */
+  #feedback-text {
+    position: absolute;
+    bottom: 118px;
+    width: 100%;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    will-change: opacity, transform;
+  }
+  #feedback-text.flash {
+    animation: feedFlash 1.6s ease-out forwards;
+  }
+  @keyframes feedFlash {
+    0%   { opacity: 1; transform: scale(1.08); }
+    30%  { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.95); }
+  }
+
+  /* Bar chart */
+  #chart-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 52px;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 16px 6px;
+    gap: 6px;
+    z-index: 5;
+  }
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .bar-label {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.5);
+    font-weight: 700;
+  }
+  .bar-track {
+    width: 100%;
+    height: 26px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+  .bar-fill {
+    width: 100%;
+    height: 0%;
+    border-radius: 4px;
+    transition: height 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    min-height: 0;
+  }
+  .bar-fill[data-type="see"]   { background: var(--see); box-shadow: 0 0 8px var(--see); }
+  .bar-fill[data-type="hear"]  { background: var(--hear); box-shadow: 0 0 8px var(--hear); }
+  .bar-fill[data-type="feel"]  { background: var(--feel); box-shadow: 0 0 8px var(--feel); }
+  .bar-fill[data-type="think"] { background: var(--think); box-shadow: 0 0 8px var(--think); }
+  .bar-count {
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* NOTES FIELD — 72% */
+  #notes-field {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    padding: 8px 10px 10px;
+  }
+
+  /* Token grid (absolute, fills from bottom) */
+  #token-grid {
+    position: absolute;
+    bottom: 10px;
+    left: 10px; right: 10px;
+    display: flex;
+    flex-direction: column-reverse; /* newest line at bottom */
+    gap: 5px;
+  }
+  .token-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5px;
+  }
+  .note-token {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transform: scale(0.6);
+    animation: tokenPop 0.18s ease-out forwards;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  @keyframes tokenPop {
+    to { opacity: 1; transform: scale(1); }
+  }
+  .note-token[data-type="see"] {
+    color: var(--see);
+    border-color: rgba(242,227,16,0.35);
+    background: rgba(242,227,16,0.07);
+    text-shadow: 0 0 8px rgba(242,227,16,0.8), 0 0 20px rgba(242,227,16,0.5);
+  }
+  .note-token[data-type="hear"] {
+    color: var(--hear);
+    border-color: rgba(19,133,234,0.35);
+    background: rgba(19,133,234,0.07);
+    text-shadow: 0 0 8px rgba(19,133,234,0.8), 0 0 20px rgba(19,133,234,0.5);
+  }
+  .note-token[data-type="feel"] {
+    color: var(--feel);
+    border-color: rgba(238,109,255,0.35);
+    background: rgba(238,109,255,0.07);
+    text-shadow: 0 0 8px rgba(238,109,255,0.8), 0 0 20px rgba(238,109,255,0.5);
+  }
+  .note-token[data-type="think"] {
+    color: var(--think);
+    border-color: rgba(11,198,219,0.35);
+    background: rgba(11,198,219,0.07);
+    text-shadow: 0 0 8px rgba(11,198,219,0.8), 0 0 20px rgba(11,198,219,0.5);
+  }
+
+  /* Floating +1 */
+  .float-plus {
+    position: fixed;
+    font-size: 28px;
+    font-weight: 900;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 1;
+    animation: floatUp 1.2s ease-out forwards;
+  }
+  @keyframes floatUp {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    60%  { opacity: 0.8; }
+    100% { opacity: 0; transform: translateY(-70px) scale(0.8); }
+  }
+
+  /* Reward overlay */
+  #reward-overlay {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+  }
+  #reward-overlay.active {
+    animation: rewardFade 2.4s ease-in-out forwards;
+  }
+  @keyframes rewardFade {
+    0%   { opacity: 0; }
+    15%  { opacity: 1; }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  #reward-text {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-align: center;
+    line-height: 1.2;
+    background: linear-gradient(135deg, var(--see) 0%, var(--feel) 40%, var(--think) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 24px rgba(238,109,255,0.6));
+    animation: rewardPulse 0.6s ease-out;
+  }
+  @keyframes rewardPulse {
+    0%   { transform: scale(0.7); }
+    60%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+
+  /* Paused overlay */
+  #pause-veil {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 50;
+    font-size: 20px;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    pointer-events: none;
+  }
+  #pause-veil.visible { display: flex; }
+
+  /* Instructions (shown before first swipe) */
+  #instructions {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 30;
+    pointer-events: none;
+    transition: opacity 0.5s;
+  }
+  #instructions.hidden { opacity: 0; }
+  .swipe-hints {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    grid-template-rows: 1fr 60px 1fr;
+    gap: 6px;
+    width: 220px;
+    height: 220px;
+  }
+  .hint {
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0.75;
+  }
+  .hint-arrow { font-size: 22px; }
+  .hint-center {
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+  }
+  #start-hint {
+    font-size: 12px;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+  }
+</style>
 </head>
 <body>
-    <div id="app">
-        <!-- Monkey image -->
-        <img src="monk12.png" alt="Monkey" id="monkey-img">
-        
-        <span id="clock"></span>
 
-        <!-- Feedback text -->
-        <div id="feedback-text"></div>
-        
-        <!-- Floating text container for +1 animations -->
-        <div id="floating-text-container"></div>
-        
-        <!-- Counter list -->
-        <div id="counters">
-            <div class="counter-item" id="body-counter">ЧУВСТВУЮ <br><span id="body-count">0</span></div>
-            <div class="counter-item" id="eyes-counter">ВИЖУ <br><span id="eyes-count">0</span></div>
-            <div class="counter-item" id="ear-counter">СЛЫШУ <br><span id="ear-count">0</span></div>
-            <div class="counter-item" id="brain-counter">ДУМАЮ <br><span id="brain-count">0</span></div>
-        </div>
-        <div id="counter">
-            <span id="prepreprecounterL"></span>
-            <br><span id="preprecounterL"></span>
-            <br><span id="precounterL"></span>
-            <br><span id="counterL">0:00</span>
-        </div>
+<div id="app">
 
-        <div id="chart-container">
-            <canvas id="swipeChart"></canvas>
-        </div>
+  <!-- TOP: MONKEY ZONE -->
+  <div id="monkey-zone">
+
+    <!-- Round counter -->
+    <div id="round-display">КРУГ <span id="round-num">0</span></div>
+
+    <!-- Play/Pause -->
+    <button id="play-pause" aria-label="Пауза">⏸</button>
+
+    <!-- Timers -->
+    <div id="timers">
+      <div id="t-prepre"></div>
+      <div id="t-pre"></div>
+      <div id="t-cur">0:00</div>
     </div>
-    <script src="script.js"></script>
+
+    <!-- Monkey SVG -->
+    <div id="monkey-wrap">
+      <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg" width="120" height="110">
+        <!-- body -->
+        <ellipse cx="60" cy="82" rx="28" ry="22" fill="#3a2510"/>
+        <!-- left ear -->
+        <circle cx="26" cy="52" r="12" fill="#3a2510"/>
+        <circle cx="26" cy="52" r="7" fill="#7a4020"/>
+        <!-- right ear -->
+        <circle cx="94" cy="52" r="12" fill="#3a2510"/>
+        <circle cx="94" cy="52" r="7" fill="#7a4020"/>
+        <!-- head -->
+        <ellipse cx="60" cy="46" rx="28" ry="26" fill="#4a2e14"/>
+        <!-- face plate -->
+        <ellipse cx="60" cy="54" rx="18" ry="14" fill="#7a4a22"/>
+        <!-- closed eyes (meditating) -->
+        <path d="M48 44 Q51 41 54 44" stroke="#2a1008" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M66 44 Q69 41 72 44" stroke="#2a1008" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- smile -->
+        <path d="M53 55 Q60 61 67 55" stroke="#2a1008" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- nose -->
+        <ellipse cx="60" cy="51" rx="4" ry="2.5" fill="#5a3018"/>
+        <circle cx="58.5" cy="51" r="1" fill="#2a1008"/>
+        <circle cx="61.5" cy="51" r="1" fill="#2a1008"/>
+        <!-- left hand on knee -->
+        <ellipse cx="38" cy="98" rx="9" ry="6" fill="#3a2510" transform="rotate(-15,38,98)"/>
+        <!-- right hand on knee -->
+        <ellipse cx="82" cy="98" rx="9" ry="6" fill="#3a2510" transform="rotate(15,82,98)"/>
+        <!-- meditation glow halo -->
+        <circle cx="60" cy="30" r="16" fill="none" stroke="rgba(11,198,219,0.18)" stroke-width="2"/>
+        <circle cx="60" cy="30" r="22" fill="none" stroke="rgba(11,198,219,0.07)" stroke-width="1.5"/>
+        <!-- third eye dot -->
+        <circle cx="60" cy="36" r="2" fill="rgba(11,198,219,0.7)"/>
+      </svg>
+    </div>
+
+    <!-- Feedback flash -->
+    <div id="feedback-text"></div>
+
+    <!-- Bar chart -->
+    <div id="chart-bar">
+      <div class="bar-col">
+        <div class="bar-count" id="count-see">0</div>
+        <div class="bar-track"><div class="bar-fill" data-type="see" id="bar-see"></div></div>
+        <div class="bar-label">ВИЖУ</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-count" id="count-hear">0</div>
+        <div class="bar-track"><div class="bar-fill" data-type="hear" id="bar-hear"></div></div>
+        <div class="bar-label">СЛЫШУ</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-count" id="count-feel">0</div>
+        <div class="bar-track"><div class="bar-fill" data-type="feel" id="bar-feel"></div></div>
+        <div class="bar-label">ЧУВСТВУЮ</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-count" id="count-think">0</div>
+        <div class="bar-track"><div class="bar-fill" data-type="think" id="bar-think"></div></div>
+        <div class="bar-label">ДУМАЮ</div>
+      </div>
+    </div>
+
+  </div><!-- /monkey-zone -->
+
+
+  <!-- BOTTOM: NOTES FIELD -->
+  <div id="notes-field">
+
+    <!-- Instructions before first swipe -->
+    <div id="instructions">
+      <div class="swipe-hints">
+        <!-- top center: FEEL (up) -->
+        <div></div>
+        <div class="hint" style="color:var(--feel)">
+          <div class="hint-arrow">↑</div>
+          <div>ЧУВСТВУЮ</div>
+        </div>
+        <div></div>
+        <!-- middle row: HEAR (left), center, THINK (right) -->
+        <div class="hint" style="color:var(--hear)">
+          <div class="hint-arrow">←</div>
+          <div>СЛЫШУ</div>
+        </div>
+        <div class="hint-center"></div>
+        <div class="hint" style="color:var(--think)">
+          <div class="hint-arrow">→</div>
+          <div>ДУМАЮ</div>
+        </div>
+        <!-- bottom center: SEE (down) -->
+        <div></div>
+        <div class="hint" style="color:var(--see)">
+          <div>ВИЖУ</div>
+          <div class="hint-arrow">↓</div>
+        </div>
+        <div></div>
+      </div>
+      <div id="start-hint">СВАЙП ЧТОБЫ НАЧАТЬ</div>
+    </div>
+
+    <div id="token-grid"></div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- Reward overlay -->
+<div id="reward-overlay">
+  <div id="reward-text"></div>
+</div>
+
+<!-- Pause veil -->
+<div id="pause-veil">ПАУЗА</div>
+
+<!-- canvas-confetti CDN -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+const state = {
+  counts: { see: 0, hear: 0, feel: 0, think: 0 },
+  lastSwipeTime: 0,
+  prevInterval: null,
+  prevPrevInterval: null,
+  isPaused: false,
+  started: false,
+  roundCount: 0,
+  rewardInProgress: false,
+
+  // Notes field grid
+  tokensPerRow: 0,
+  maxRows: 0,
+  fieldCapacity: 0,
+  tokensFilled: 0,         // tokens placed this round
+  currentRowTokens: 0,     // tokens in current (bottom) active row
+};
+
+/* ═══════════════════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════════════════ */
+const TOKEN_W  = 82;   // px — approximate token width (label + padding)
+const TOKEN_H  = 28;   // px — approximate token height
+const TOKEN_GAP = 5;   // px — gap between tokens/rows
+
+const NOTE_LABELS = {
+  see:   'ВИЖУ',
+  hear:  'СЛЫШУ',
+  feel:  'ЧУВСТВУЮ',
+  think: 'ДУМАЮ',
+};
+const NOTE_COLORS = {
+  see:   'rgba(242,227,16,',
+  hear:  'rgba(19,133,234,',
+  feel:  'rgba(238,109,255,',
+  think: 'rgba(11,198,219,',
+};
+
+/* ═══════════════════════════════════════════════════════
+   DOM REFS
+═══════════════════════════════════════════════════════ */
+const $field       = document.getElementById('notes-field');
+const $grid        = document.getElementById('token-grid');
+const $feedback    = document.getElementById('feedback-text');
+const $timeCur     = document.getElementById('t-cur');
+const $timePre     = document.getElementById('t-pre');
+const $timePrepre  = document.getElementById('t-prepre');
+const $roundNum    = document.getElementById('round-num');
+const $playPause   = document.getElementById('play-pause');
+const $instructions = document.getElementById('instructions');
+const $pauseVeil   = document.getElementById('pause-veil');
+const $rewardOverlay = document.getElementById('reward-overlay');
+const $rewardText  = document.getElementById('reward-text');
+
+/* ═══════════════════════════════════════════════════════
+   GRID COMPUTATION
+═══════════════════════════════════════════════════════ */
+function computeGrid() {
+  const fieldW = $field.clientWidth  - 20; // account for padding
+  const fieldH = $field.clientHeight - 18;
+
+  const tokPerRow  = Math.floor((fieldW + TOKEN_GAP) / (TOKEN_W + TOKEN_GAP));
+  const rowCount   = Math.floor((fieldH + TOKEN_GAP) / (TOKEN_H + TOKEN_GAP));
+
+  state.tokensPerRow  = Math.max(tokPerRow, 3);
+  state.maxRows       = Math.max(rowCount, 4);
+  state.fieldCapacity = state.tokensPerRow * state.maxRows;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOKEN RENDERING
+═══════════════════════════════════════════════════════ */
+function addToken(type) {
+  const rows = $grid.querySelectorAll('.token-row');
+  let activeRow;
+
+  if (rows.length === 0 || state.currentRowTokens >= state.tokensPerRow) {
+    // Start a new row
+    activeRow = document.createElement('div');
+    activeRow.className = 'token-row';
+    // column-reverse means prepend = visually appears at bottom
+    $grid.insertBefore(activeRow, $grid.firstChild);
+    state.currentRowTokens = 0;
+  } else {
+    activeRow = rows[0]; // first child = bottom-most row
+  }
+
+  const token = document.createElement('span');
+  token.className = 'note-token';
+  token.setAttribute('data-type', type);
+  token.textContent = NOTE_LABELS[type];
+  activeRow.appendChild(token);
+
+  state.currentRowTokens++;
+  state.tokensFilled++;
+
+  // Check fill
+  if (state.tokensFilled >= state.fieldCapacity) {
+    scheduleReward();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   REWARD SEQUENCE
+═══════════════════════════════════════════════════════ */
+const REWARDS = ['ОТЛИЧНО', 'ПРОДОЛЖАЙ', 'НАСТОЯЩИЙ МОМЕНТ', '🔥', 'ЧИСТОЕ ПРИСУТСТВИЕ'];
+
+function scheduleReward() {
+  if (state.rewardInProgress) return;
+  state.rewardInProgress = true;
+  state.roundCount++;
+  $roundNum.textContent = state.roundCount;
+
+  // Fire confetti
+  const colors = ['#f2e310','#1385ea','#ee6dff','#0bc6db','#ffffff'];
+  confetti({
+    particleCount: 140,
+    spread: 90,
+    origin: { x: 0.5, y: 0.55 },
+    colors,
+    ticks: 180,
+  });
+  setTimeout(() => {
+    confetti({
+      particleCount: 60,
+      angle: 60, spread: 60,
+      origin: { x: 0, y: 0.6 },
+      colors,
+    });
+    confetti({
+      particleCount: 60,
+      angle: 120, spread: 60,
+      origin: { x: 1, y: 0.6 },
+      colors,
+    });
+  }, 250);
+
+  // Show reward text
+  const msg = REWARDS[state.roundCount % REWARDS.length];
+  $rewardText.textContent = msg;
+  $rewardOverlay.classList.add('active');
+
+  setTimeout(() => {
+    $rewardOverlay.classList.remove('active');
+    clearNotesField();
+    state.rewardInProgress = false;
+  }, 2400);
+}
+
+function clearNotesField() {
+  $grid.innerHTML = '';
+  state.tokensFilled = 0;
+  state.currentRowTokens = 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FEEDBACK & FLOATING +1
+═══════════════════════════════════════════════════════ */
+function showFeedback(type) {
+  $feedback.textContent = NOTE_LABELS[type];
+  $feedback.style.cssText = `color:#fff; text-shadow: 3px 2px 12px ${NOTE_COLORS[type]}0.9), 1px 1px 30px ${NOTE_COLORS[type]}0.8), 0 0 55px ${NOTE_COLORS[type]}0.5);`;
+  $feedback.classList.remove('flash');
+  void $feedback.offsetWidth; // reflow
+  $feedback.classList.add('flash');
+}
+
+function showFloatingPlus(type, x, y) {
+  const el = document.createElement('div');
+  el.className = 'float-plus';
+  el.textContent = '+1';
+  el.style.left = x + 'px';
+  el.style.top  = y + 'px';
+  el.style.color = `${NOTE_COLORS[type]}0.9)`;
+  el.style.textShadow = `0 0 12px ${NOTE_COLORS[type]}0.7)`;
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+/* ═══════════════════════════════════════════════════════
+   COUNTS & BAR CHART
+═══════════════════════════════════════════════════════ */
+function updateCount(type) {
+  state.counts[type]++;
+  document.getElementById('count-' + type).textContent = state.counts[type];
+  updateBarChart();
+}
+
+function updateBarChart() {
+  const total = Object.values(state.counts).reduce((a,b) => a+b, 0) || 1;
+  ['see','hear','feel','think'].forEach(t => {
+    const pct = (state.counts[t] / total) * 100;
+    document.getElementById('bar-' + t).style.height = pct + '%';
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   INTERVAL TIMER DISPLAY
+═══════════════════════════════════════════════════════ */
+function fmt(ms) {
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  return `${m}:${String(s % 60).padStart(2,'0')}`;
+}
+
+function tickTimer() {
+  if (!state.started || state.isPaused) return;
+  const elapsed = Date.now() - state.lastSwipeTime;
+  $timeCur.textContent = fmt(elapsed);
+}
+
+function onSwipeRecorded() {
+  const now = Date.now();
+  if (state.lastSwipeTime > 0) {
+    const interval = now - state.lastSwipeTime;
+    state.prevPrevInterval = state.prevInterval;
+    state.prevInterval = interval;
+    if (state.prevInterval !== null) {
+      $timePre.textContent = fmt(state.prevInterval);
+    }
+    if (state.prevPrevInterval !== null) {
+      $timePrepre.textContent = fmt(state.prevPrevInterval);
+    }
+  }
+  state.lastSwipeTime = now;
+  state.started = true;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SWIPE HANDLING
+═══════════════════════════════════════════════════════ */
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+  if (state.isPaused || state.rewardInProgress) return;
+
+  const t = e.changedTouches[0];
+  const dx = t.clientX - touchStartX;
+  const dy = t.clientY - touchStartY;
+
+  if (Math.abs(dx) < 50 && Math.abs(dy) < 50) return;
+
+  let type;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    type = dx > 0 ? 'think' : 'hear';
+  } else {
+    type = dy > 0 ? 'see' : 'feel';
+  }
+
+  // First swipe: hide instructions
+  if (!state.started) {
+    $instructions.classList.add('hidden');
+    setTimeout(() => { $instructions.style.display = 'none'; }, 500);
+  }
+
+  onSwipeRecorded();
+  updateCount(type);
+  addToken(type);
+  showFeedback(type);
+  showFloatingPlus(type, t.clientX, t.clientY);
+}, { passive: true });
+
+/* ═══════════════════════════════════════════════════════
+   PLAY / PAUSE
+═══════════════════════════════════════════════════════ */
+$playPause.addEventListener('click', () => {
+  state.isPaused = !state.isPaused;
+  $playPause.textContent = state.isPaused ? '▶' : '⏸';
+  $pauseVeil.classList.toggle('visible', state.isPaused);
+  if (!state.isPaused && state.started) {
+    // Shift lastSwipeTime forward so pause duration doesn't inflate interval
+    state.lastSwipeTime = Date.now();
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  computeGrid();
+  setInterval(tickTimer, 1000);
+});
+
+window.addEventListener('resize', () => {
+  computeGrid();
+});
+</script>
 </body>
 </html>

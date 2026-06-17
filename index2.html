@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Monkey Swipe</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <div id="app">
+        <!-- Monkey image -->
+        <img src="monk12.png" alt="Monkey" id="monkey-img">
+        
+        <span id="clock"></span>
+
+        <!-- Feedback text -->
+        <div id="feedback-text"></div>
+        
+        <!-- Floating text container for +1 animations -->
+        <div id="floating-text-container"></div>
+        
+        <!-- Counter list -->
+        <div id="counters">
+            <div class="counter-item" id="body-counter">ЧУВСТВУЮ <br><span id="body-count">0</span></div>
+            <div class="counter-item" id="eyes-counter">ВИЖУ <br><span id="eyes-count">0</span></div>
+            <div class="counter-item" id="ear-counter">СЛЫШУ <br><span id="ear-count">0</span></div>
+            <div class="counter-item" id="brain-counter">ДУМАЮ <br><span id="brain-count">0</span></div>
+        </div>
+        <div id="counter">
+            <span id="prepreprecounterL"></span>
+            <br><span id="preprecounterL"></span>
+            <br><span id="precounterL"></span>
+            <br><span id="counterL">0:00</span>
+        </div>
+
+        <div id="chart-container">
+            <canvas id="swipeChart"></canvas>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
